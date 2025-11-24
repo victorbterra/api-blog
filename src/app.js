@@ -8,7 +8,7 @@ app.use(cors());
 
 
 app.get('/', (req, res) => {
-  res.send('API Blog rodando com sucesso!');
+  res.send({ messagem: 'API funcionando com sucesso !' });
 }); // rota para testar se a API está funcionando
 
 
