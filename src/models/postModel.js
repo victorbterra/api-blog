@@ -22,8 +22,8 @@ const PostSchema = new Schema(
       unique: true,
     },
     tags: {
-      type: [Array],
-      default: [],
+      type: [String],
+      required: true,
     },
     createdAt: {
       type: Date,
