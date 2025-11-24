@@ -1,17 +1,15 @@
 import app from './app.js';
 import connectDB from './config/dbConnect.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const PORT = process.env.PORT || 5000;
 
 
-
-const PORT = process.env.PORT || 3000;
-
-
-try {
+connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor a escutar na porta ${PORT}`);
   });
-  await connectDB();
-} catch (error) { 
-  console.error('Erro ao conectar ao banco de dados:', error);
-  process.exit(1);
-}
+});
+

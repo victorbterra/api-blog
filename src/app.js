@@ -1,3 +1,4 @@
+import postsRoutes from './routes/postRoutes.js';
 import express from 'express';
 import cors from 'cors';
 
@@ -6,10 +7,7 @@ const app = express(); // middleware para aceitar JSON nas requisições
 app.use(express.json());
 app.use(cors());
 
-
-app.get('/', (req, res) => {
-  res.send({ messagem: 'API funcionando com sucesso !' });
-}); // rota para testar se a API está funcionando
+app.use(postsRoutes); // usa as rotas de posts
 
 
 export default app;

@@ -1,16 +1,16 @@
-import Post from "../models/postModel";
+import Post from "../models/postModel.js";
 
 
-
-// cria um novo post
-
-async function createPost(req, res) {
-  try {
-    const { title, content, author, slug, tags } = req.body;
-    const post = new Post({ title, content, author, slug, tags });
-    await post.save();
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+class PostController {
+    static async createPost(req, res) {
+        try {
+            const newPost = new Post(req.body);
+            await newPost.save();
+            res.status(201).json({mensagem: 'Post criado com sucesso!', Post: newPost});
+        } catch (error) {
+            res.status(500).json({ message:'Erro ao criar o post. ', error: error.message });
+        }
+    }
 }
+
+export default PostController;
