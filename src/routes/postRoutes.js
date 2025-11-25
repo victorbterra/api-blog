@@ -5,5 +5,6 @@ import postController from '../controllers/postController.js';
 const router = express.Router();
 
 router.post('/posts', postController.createPost); // rota para criar um novo post
+router.get('/posts', postController.getPosts); // rota para obter todos os posts
 
 export default router; // exporta o router para ser usado em outro arquivo

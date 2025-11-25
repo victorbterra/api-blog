@@ -11,6 +11,15 @@ class PostController {
             res.status(500).json({ message:'Erro ao criar o post. ', error: error.message });
         }
     }
+
+    static async getPosts(req, res) {
+        try {
+            const posts = await Post.find();
+            res.status(200).json({message: 'Posts retornados com sucesso!', posts: posts});
+        } catch (error) {
+            res.status(500).json({ message: 'Erro ao buscar os posts.', error: error.message });
+        }
+    }
 }
 
 export default PostController;
