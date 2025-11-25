@@ -20,6 +20,33 @@ class PostController {
             res.status(500).json({ message: 'Erro ao buscar os posts.', error: error.message });
         }
     }
+
+    static async getPostById(req, res) {
+        try{
+            const postId = req.params.id;
+            const findPostId = await Post.findById(postId);
+            if(findPostId){
+                res.status(200).json({message: 'Post encontrado com sucesso!', post: findPostId});
+            } else {
+                res.status(404).json({message: 'Post não encontrado.'});
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Erro ao buscar o post.', error: error.message });
+        }
+    }
+    static async getPostBySlug(req, res) {
+        try{
+            const postSlug = req.params.slug;
+            const findPostSlug = await Post.findOne({slug: postSlug});
+            if(findPostSlug) {
+                res.status(200).json({messagem: 'Post encontrado com sucesso!', post: findPostSlug});
+            } else {
+                res.status(404).json({message: 'Post não encontrado.'});
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Erro ao buscar o post.', error: error.message });
+        }
+    }
 }
 
 export default PostController;
