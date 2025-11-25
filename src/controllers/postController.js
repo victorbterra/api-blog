@@ -47,6 +47,20 @@ class PostController {
             res.status(500).json({ message: 'Erro ao buscar o post.', error: error.message });
         }
     }
+
+    static async updatePost(req, res) {
+        try{
+            const postId = req.params.id;
+            const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true });
+            if(updatedPost) {
+                res.status(200).json({messagem: 'Post atualizado com sucesso!', post: updatedPost});
+            } else {
+                res.status(404).json({messagem: 'Post não encontrado.'});
+            }
+        } catch (error) {
+            res.status(500).json({ messagem: 'Erro ao atualizar o post.', error: error.message });
+        }
+    }
 }
 
 export default PostController;
