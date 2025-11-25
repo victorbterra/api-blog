@@ -61,6 +61,20 @@ class PostController {
             res.status(500).json({ messagem: 'Erro ao atualizar o post.', error: error.message });
         }
     }
+
+    static async deletePost(req, res) {
+        try{
+            const postId = req.params.id;
+            const deletedPost = await Post.findByIdAndDelete(postId);
+            if(deletedPost) {
+                res.status(200).json({messagem: 'Post deletado com sucesso!', post: deletedPost});
+            } else {
+                res.status(404).json({messagem: 'Post não encontrado.'});
+            }
+        } catch (error) {
+            res.status(500).json({ messagem: 'Erro ao deletar o post.', error: error.message });
+        }
+    }
 }
 
 export default PostController;
