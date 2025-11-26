@@ -1,10 +1,28 @@
 import express from 'express';
 import postController from '../controllers/postController.js';
+import {body, validationResult} from 'express-validator';
 
 
 const router = express.Router();
 
-router.post('/posts', postController.createPost); // rota para criar um novo post
+const validate = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+};
+
+router.post('/posts',[
+    body('title')
+        .notEmpty().withMessage('O título é obrigatório.')
+        .isLength({min: 5}).withMessage('O título deve ter pelo menos 5 caracteres.'),
+    body('content')
+        .notEmpty().withMessage('O conteúdo não pode ser vazio.'),
+    body('slug')
+        .notEmpty().withMessage('O slug é obrigatório.'),
+], validate, postController.createPost); // rota para criar um novo post
+
 router.get('/posts', postController.getPosts); // rota para obter todos os posts
 router.get('/posts/slug/:slug', postController.getPostBySlug); // rota para obter um post por slug
 router.get('/posts/:id', postController.getPostById); // rota para obter um post por ID
