@@ -6,18 +6,24 @@ class PostController {
         try {
             const newPost = new Post(req.body);
             await newPost.save();
-            res.status(201).json({mensagem: 'Post criado com sucesso!', Post: newPost});
+            res.status(201).json({message: 'Post criado com sucesso!', Post: newPost});
         } catch (error) {
             res.status(500).json({ message:'Erro ao criar o post. ', error: error.message });
         }
     }
 
     static async getPosts(req, res) {
+        
         try {
-            let {page = 1, limit = 10} = req.query;
+            const {title} = req.query;
+            let filter = {};
+            if (title) {
+                filter.title = { $regex: title, $options: 'i' }; // busca por título com regex para permitir buscas parciais e case insensitive
+            }
+            let {page = 1, limit = 10} = req.query; // paginação
             page = parseInt(page);
             limit = parseInt(limit);
-            const posts = await Post.find()
+            const posts = await Post.find(filter)
                 .skip((page - 1) * limit) // Calcula o número de documentos a serem pulados com base na página atual e no limite
                 .limit(limit);
             res.status(200).json({message: 'Posts retornados com sucesso!', posts: posts});
@@ -44,7 +50,7 @@ class PostController {
             const postSlug = req.params.slug;
             const findPostSlug = await Post.findOne({slug: postSlug});
             if(findPostSlug) {
-                res.status(200).json({messagem: 'Post encontrado com sucesso!', post: findPostSlug});
+                res.status(200).json({message: 'Post encontrado com sucesso!', post: findPostSlug});
             } else {
                 res.status(404).json({message: 'Post não encontrado.'});
             }
@@ -58,12 +64,12 @@ class PostController {
             const postId = req.params.id;
             const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true }); //
             if(updatedPost) {
-                res.status(200).json({messagem: 'Post atualizado com sucesso!', post: updatedPost});
+                res.status(200).json({message: 'Post atualizado com sucesso!', post: updatedPost});
             }else {
-                res.status(404).json({messagem: 'Post não encontrado.'});
+                res.status(404).json({message: 'Post não encontrado.'});
             }
         } catch (error) {
-            res.status(500).json({ messagem: 'Erro ao atualizar o post.', error: error.message });
+            res.status(500).json({ message: 'Erro ao atualizar o post.', error: error.message });
         }
     } 
 
@@ -72,12 +78,12 @@ class PostController {
             const postId = req.params.id;
             const deletedPost = await Post.findByIdAndDelete(postId);
             if(deletedPost) {
-                res.status(200).json({messagem: 'Post deletado com sucesso!', post: deletedPost});
+                res.status(200).json({message: 'Post deletado com sucesso!', post: deletedPost});
             } else {
-                res.status(404).json({messagem: 'Post não encontrado.'});
+                res.status(404).json({message: 'Post não encontrado.'});
             }
         } catch (error) {
-            res.status(500).json({ messagem: 'Erro ao deletar o post.', error: error.message });
+            res.status(500).json({ message: 'Erro ao deletar o post.', error: error.message });
         }
     }
 }
