@@ -11,5 +11,4 @@ app.use(helmet());
 
 app.use(postsRoutes); // usa as rotas de posts
 
-
 export default app;

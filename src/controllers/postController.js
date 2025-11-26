@@ -24,8 +24,11 @@ class PostController {
             page = parseInt(page);
             limit = parseInt(limit);
             const posts = await Post.find(filter)
+                .populate("category")
                 .skip((page - 1) * limit) // Calcula o número de documentos a serem pulados com base na página atual e no limite
                 .limit(limit);
+ // popula os dados da categoria
+                
             res.status(200).json({message: 'Posts retornados com sucesso!', posts: posts});
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar os posts.', error: error.message });
@@ -48,7 +51,8 @@ class PostController {
     static async getPostBySlug(req, res) {
         try{
             const postSlug = req.params.slug;
-            const findPostSlug = await Post.findOne({slug: postSlug});
+            const findPostSlug = await Post.findOne({slug: postSlug})
+                .populate("category");
             if(findPostSlug) {
                 res.status(200).json({message: 'Post encontrado com sucesso!', post: findPostSlug});
             } else {
