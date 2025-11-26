@@ -14,7 +14,12 @@ class PostController {
 
     static async getPosts(req, res) {
         try {
-            const posts = await Post.find();
+            let {page = 1, limit = 10} = req.query;
+            page = parseInt(page);
+            limit = parseInt(limit);
+            const posts = await Post.find()
+                .skip((page - 1) * limit) // Calcula o número de documentos a serem pulados com base na página atual e no limite
+                .limit(limit);
             res.status(200).json({message: 'Posts retornados com sucesso!', posts: posts});
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar os posts.', error: error.message });
@@ -51,16 +56,16 @@ class PostController {
     static async updatePost(req, res) {
         try{
             const postId = req.params.id;
-            const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true });
+            const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true }); //
             if(updatedPost) {
                 res.status(200).json({messagem: 'Post atualizado com sucesso!', post: updatedPost});
-            } else {
+            }else {
                 res.status(404).json({messagem: 'Post não encontrado.'});
             }
         } catch (error) {
             res.status(500).json({ messagem: 'Erro ao atualizar o post.', error: error.message });
         }
-    }
+    } 
 
     static async deletePost(req, res) {
         try{
