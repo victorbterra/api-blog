@@ -1,10 +1,27 @@
 import Post from "../models/postModel.js";
+import Category from "../models/categoryModel.js";
 
 
 class PostController {
     static async createPost(req, res) {
         try {
-            const newPost = new Post(req.body);
+            let {title, content, author, slug, tags, category} = req.body;
+            if(!category) {
+                let defaultCategory = await Category.findOne({ slug: 'Geral' });
+                if(!defaultCategory) {
+                    defaultCategory = new Category({ name: 'Geral', slug: 'geral' });
+                    await defaultCategory.save();
+                }
+                category = defaultCategory._id;
+            }
+            const newPost = new Post({
+                title,
+                content,
+                author,
+                slug,
+                tags,
+                category
+            });
             await newPost.save();
             res.status(201).json({message: 'Post criado com sucesso!', Post: newPost});
         } catch (error) {
