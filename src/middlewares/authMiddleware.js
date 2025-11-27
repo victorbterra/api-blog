@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-export const authMiddleware = (req, res, next) => {
+dotenv.config();
+
+const authMiddleware = (req, res, next) => {
     const authHeader = req.header("Authorization");
     if (!authHeader) return res.status(401).json({ message: "Acesso negado" });
     try {
@@ -11,3 +14,5 @@ export const authMiddleware = (req, res, next) => {
         res.status(400).json({ message: "Token inválido" });
     }
 };
+
+export default authMiddleware;
