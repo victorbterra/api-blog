@@ -1,6 +1,6 @@
 import express from 'express';
 import postController from '../controllers/postController.js';
-import validate from '../middleware/validate.js';
+import validate from '../middlewares/validate.js';
 import { body } from 'express-validator';
 
 
