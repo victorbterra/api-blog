@@ -12,7 +12,7 @@ O objetivo foi construir uma aplicação robusta seguindo boas práticas de merc
 
 ### 🌐 Deploy (Produção)
 A API está rodando em produção no Render. Você pode testar a documentação ao vivo aqui:
-**[[LINK_DA_SUA_API_NO_RENDER/api-docs](https://api-blog-terratech.onrender.com/api-docs/)]**
+**[Link da API no Swagger](https://api-blog-terratech.onrender.com/api-docs/)]**
 
 ---
 
