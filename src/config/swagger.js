@@ -10,6 +10,10 @@ const swaggerDocument = {
   },
   servers: [
     {
+      url: 'https://api-blog-terratech.onrender.com',
+      description: 'Servidor de Produção',
+    },
+    {
       url: 'http://localhost:3000',
       description: 'Servidor Local',
     },
