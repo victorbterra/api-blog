@@ -5,6 +5,7 @@ class PostController {
   static async createPost(req, res) {
     try {
         let { title, content, author, slug, tags, category } = req.body;
+        
         if (!category) {
             let defaultCategory = await Category.findOne({
             $or: [{ slug: "geral" }, { name: "Geral" }],
@@ -18,6 +19,13 @@ class PostController {
         }
         category = defaultCategory._id;
         }
+        if (tags && typeof tags === 'string') {
+            tags = tags.split(',').map(tag => tag.trim());
+        }
+        if (!tags) {
+            tags = [];
+        }
+
         const newPost = new Post({
         title,
         content,
