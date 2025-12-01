@@ -132,25 +132,56 @@ class PostController {
     }
   }
 
-  static async updatePost(req, res) {
-    try {
-      const postId = req.params.id;
-      const updatedPost = await Post.findByIdAndUpdate(postId, req.body, {
-        new: true,
-      }); //
-      if (updatedPost) {
-        res
-          .status(200)
-          .json({ message: "Post atualizado com sucesso!", post: updatedPost });
-      } else {
-        res.status(404).json({ message: "Post não encontrado." });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Erro ao atualizar o post.", error: error.message });
+static async updatePost(req, res) {
+  try {
+    const postId = req.params.id;
+    
+    // Desestrutura para podermos tratar os dados antes de salvar
+    let { title, content, slug, tags, category } = req.body;
+
+    // 1. TRATAMENTO DE TAGS (Se vier string, vira array)
+    if (tags && typeof tags === 'string') {
+      tags = tags.split(',').map(tag => tag.trim());
     }
+
+    // 2. TRATAMENTO DE CATEGORIA (Nome -> ID)
+    if (category) {
+      // Se NÃO for um ID válido (ou seja, é um nome como "Tecnologia")
+      if (!mongoose.Types.ObjectId.isValid(category)) {
+        
+        // Procura a categoria pelo nome
+        let categoryFound = await Category.findOne({ name: category });
+        
+        // Se não existir, cria
+        if (!categoryFound) {
+          categoryFound = await Category.create({
+            name: category,
+            slug: category.toLowerCase().replace(/ /g, '-')
+          });
+        }
+        
+        // Substitui o nome pelo ID
+        category = categoryFound._id;
+      }
+    }
+
+    // 3. ATUALIZA NO BANCO COM OS DADOS TRATADOS
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { title, content, slug, tags, category }, // Objeto explícito
+      { new: true } // Retorna o post atualizado
+    );
+
+    if (updatedPost) {
+      res.status(200).json({ message: "Post atualizado com sucesso!", post: updatedPost });
+    } else {
+      res.status(404).json({ message: "Post não encontrado." });
+    }
+
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao atualizar o post.", error: error.message });
   }
+}
 
   static async deletePost(req, res) {
     try {
