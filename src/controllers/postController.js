@@ -1,49 +1,72 @@
+import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import Category from "../models/categoryModel.js";
 
 class PostController {
   static async createPost(req, res) {
     try {
-        let { title, content, author, slug, tags, category } = req.body;
-        
-        if (!category) {
-            let defaultCategory = await Category.findOne({
-            $or: [{ slug: "geral" }, { name: "Geral" }],
+      let { title, content, author, slug, tags, category } = req.body;
+
+      // 1. TRATAMENTO DE TAGS (String -> Array)
+      if (tags && typeof tags === "string") {
+        tags = tags.split(",").map((tag) => tag.trim());
+      } else if (!tags) {
+        tags = [];
+      }
+
+      // 2. TRATAMENTO DE CATEGORIA (Nome -> ID)
+      if (category) {
+        // Verifica se O QUE VEIO NÃO É um ID válido (ou seja, é um nome como "tecnologia")
+        if (!mongoose.Types.ObjectId.isValid(category)) {
+          // Tenta achar a categoria pelo nome
+          let categoryFound = await Category.findOne({ name: category });
+
+          // Se não achar, cria a categoria nova na hora
+          if (!categoryFound) {
+            categoryFound = await Category.create({
+              name: category,
+              slug: category.toLowerCase().replace(/ /g, "-"), // cria um slug simples
             });
+          }
+
+          // Substitui o texto pelo ID real que o banco aceita
+          category = categoryFound._id;
+        }
+      } else {
+        // 3. SE NÃO VEIO CATEGORIA NENHUMA -> USA "GERAL"
+        let defaultCategory = await Category.findOne({
+          $or: [{ slug: "geral" }, { name: "Geral" }],
+        });
 
         if (!defaultCategory) {
-            defaultCategory = await Category.create({
+          defaultCategory = await Category.create({
             name: "Geral",
             slug: "geral",
-            });
+          });
         }
         category = defaultCategory._id;
-        }
-        if (tags && typeof tags === 'string') {
-            tags = tags.split(',').map(tag => tag.trim());
-        }
-        if (!tags) {
-            tags = [];
-        }
+      }
 
-        const newPost = new Post({
+      // Agora 'category' é garantidamente um ID válido
+      const newPost = new Post({
         title,
         content,
         author,
         slug,
         tags,
         category,
-        });
-        await newPost.save();
-        res
-            .status(201)
-            .json({ message: "Post criado com sucesso!", Post: newPost });
+      });
+
+      await newPost.save();
+      res
+        .status(201)
+        .json({ message: "Post criado com sucesso", post: newPost });
     } catch (error) {
-        res
-            .status(500)
-            .json({ message: "Erro ao criar o post. ", error: error.message });
+      res
+        .status(500)
+        .json({ message: "Erro ao criar o post.", error: error.message });
     }
-    }
+  }
 
   static async getPosts(req, res) {
     try {
@@ -95,12 +118,10 @@ class PostController {
         "category"
       );
       if (findPostSlug) {
-        res
-          .status(200)
-          .json({
-            message: "Post encontrado com sucesso!",
-            post: findPostSlug,
-          });
+        res.status(200).json({
+          message: "Post encontrado com sucesso!",
+          post: findPostSlug,
+        });
       } else {
         res.status(404).json({ message: "Post não encontrado." });
       }
