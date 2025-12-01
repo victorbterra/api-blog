@@ -4,9 +4,9 @@ import swaggerUi from 'swagger-ui-express';
 const swaggerDocument = {
   openapi: '3.0.0',
   info: {
-    title: 'API Blog - Teste Manual',
+    title: 'API Blog - Teste de Rotas',
     version: '1.0.0',
-    description: 'Teste de Swagger Hardcoded',
+    description: 'Teste de rotas da API de Blog ',
   },
   servers: [
     {
@@ -124,7 +124,7 @@ const swaggerDocument = {
       },
     },
     // Atualizar Post por ID
-    '/posts/update/{id}': {
+    '/posts/{id}': {
       put: {
         summary: 'Atualizar Post por ID',
         tags: ['Posts'],

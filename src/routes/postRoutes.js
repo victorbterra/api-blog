@@ -17,7 +17,7 @@ router.post('/posts/create',verifyToken,[
     body('slug')
         .notEmpty().withMessage('O slug é obrigatório.'),
 ], validate, postController.createPost); // rota para criar um novo post
-router.put('/posts/update/:id', verifyToken, postController.updatePost); // rota para atualizar um post por ID
+router.put('/posts/:id', verifyToken, postController.updatePost); // rota para atualizar um post por ID
 router.delete('/posts/:id', verifyToken, postController.deletePost); // rota para deletar um post por ID
 
 // Rotas públicas
