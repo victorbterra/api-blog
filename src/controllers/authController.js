@@ -38,7 +38,7 @@ class AuthController {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ message: "Senha inválida" });
       // Gerar token JWT (implementar conforme necessário)
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET, {
         expiresIn: "1d",
       });
       res.status(200).json({ message: "Login bem-sucedido", token });
