@@ -7,8 +7,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 const app = express(); // middleware para aceitar JSON nas requisições
+app.use(cors(
+    {origin: '*'},
+));
 app.use(express.json());
-app.use(cors());
 app.use(helmet());
 app.use('/api-docs', serveSwagger, setupSwagger);
 
