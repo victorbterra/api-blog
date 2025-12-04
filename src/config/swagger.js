@@ -10,7 +10,7 @@ const swaggerDocument = {
   },
   servers: [
     {
-      url: 'https://api-blog-terratech.onrender.com',
+      url: 'https://terratechapi.squarecloud.app/',
       description: 'Servidor de Produção',
     },
     {
